@@ -23,8 +23,8 @@ class Registry:
     def register(self, participant: Participant) -> None:
         if participant.participant_id in self.entries:
             raise ValueError(f"Participant {participant.participant_id} already registered")
-        if participant.role not in {"producer", "consumer"}:
-            raise ValueError("role must be 'producer' or 'consumer'")
+        if participant.role not in {"producer", "consumer", "hybrid"}:
+            raise ValueError("role must be 'producer', 'consumer', or 'hybrid'")
         self.entries[participant.participant_id] = participant
 
     def get(self, participant_id: str) -> Participant:

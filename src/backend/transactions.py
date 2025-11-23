@@ -16,6 +16,8 @@ class EnergyTransaction:
     kilowatt_hours: float
     price_usd: float
     timestamp: datetime
+    energy_source: str = "solar"
+    ev_session_id: str | None = None
 
 
 class TransactionLogger:
@@ -30,12 +32,23 @@ class TransactionLogger:
     def transactions(self) -> List[EnergyTransaction]:
         return list(self._transactions)
 
-    def log_transaction(self, transaction: EnergyTransaction, producer: Participant, consumer: Participant) -> Dict:
+    def log_transaction(
+        self,
+        transaction: EnergyTransaction,
+        producer: Participant,
+        consumer: Participant,
+        route: List[str] | None = None,
+        additional_metadata: Dict | None = None,
+    ) -> Dict:
         if producer.participant_id != transaction.producer_id or consumer.participant_id != transaction.consumer_id:
             raise ValueError("Producer or consumer mismatch")
         payload = asdict(transaction)
         payload["timestamp"] = transaction.timestamp.isoformat()
         payload["interconnect"] = self.interconnect.name
+        payload["network"] = "Virtual Clean Power Network"
+        payload["route"] = route or []
+        if additional_metadata:
+            payload.update(additional_metadata)
         self._transactions.append(transaction)
         self.ledger.append_entry(payload)
         return payload
