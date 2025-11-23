@@ -32,3 +32,9 @@ class Registry:
             return self.entries[participant_id]
         except KeyError as exc:
             raise KeyError(f"Participant {participant_id} is not registered") from exc
+
+    @property
+    def participants(self) -> Dict[str, Participant]:
+        """Return a copy of registered participants keyed by ID."""
+
+        return dict(self.entries)
