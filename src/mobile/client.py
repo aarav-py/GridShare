@@ -15,6 +15,15 @@ class MobileClient:
         self.registry.register(participant)
         return participant
 
-    def submit_transaction(self, tx_data: Dict, producer: Participant, consumer: Participant) -> Dict:
+    def submit_transaction(
+        self,
+        tx_data: Dict,
+        producer: Participant,
+        consumer: Participant,
+        route: list | None = None,
+        additional_metadata: Dict | None = None,
+    ) -> Dict:
         transaction = EnergyTransaction(**tx_data)
-        return self.transactions.log_transaction(transaction, producer, consumer)
+        return self.transactions.log_transaction(
+            transaction, producer, consumer, route=route, additional_metadata=additional_metadata
+        )
